@@ -1,0 +1,24 @@
+server:
+  host: 127.0.0.1
+  port: 9090
+
+Redis:
+  host: 192.168.40.132
+  port: 6379
+
+Mysql:
+  host: 192.168.40.132
+  port: 3306
+  password: root
+  dbname: chat
+  user: root
+
+Consul:
+  host: 192.168.40.132
+  port: 8500
+
+RabbitMQ:
+  host: 192.168.40.132
+  port: 5672
+  user: guest
+  password: guest
