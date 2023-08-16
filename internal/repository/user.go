@@ -5,6 +5,8 @@ import (
 	"im/sql"
 )
 
+// ------------------用户操作---------------------------
+
 // 创建用户
 func CreateUser(n string, pwd string, e string, p string) {
 	db := sql.GetMysqlDB()

@@ -12,7 +12,9 @@ type Claim struct {
 	N string
 	jwt.RegisteredClaims
 } //创建用户登录标签
-func GetToken(b []byte, c string) (string, error) { //得到token,c为用户名
+
+// 得到token,c为用户名
+func GetToken(b []byte, c string) (string, error) {
 	a := Claim{
 		c,
 		jwt.RegisteredClaims{
@@ -23,7 +25,9 @@ func GetToken(b []byte, c string) (string, error) { //得到token,c为用户名
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, a) //获取token
 	return token.SignedString(b)                          //返回加密串
 }
-func ParseToken(a string) (*jwt.Token, *Claim, error) { //解析token
+
+// 解析token
+func ParseToken(a string) (*jwt.Token, *Claim, error) {
 	claim := &Claim{}
 	t, err := jwt.ParseWithClaims(a, claim, func(t *jwt.Token) (interface{}, error) {
 		return Msk, nil

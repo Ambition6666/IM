@@ -35,6 +35,7 @@ func Mid() gin.HandlerFunc {
 
 }
 
+// 解决跨域问题
 func Cors() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		method := ctx.Request.Method

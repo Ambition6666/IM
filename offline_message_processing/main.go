@@ -1,5 +1,6 @@
 package main
 
+//通过mq后台处理离线消息
 import (
 	"encoding/json"
 	"fmt"

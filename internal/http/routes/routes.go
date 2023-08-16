@@ -9,7 +9,7 @@ import (
 
 func InitRoute() *gin.Engine {
 	r := gin.Default()
-	r.Use(middleware.Cors())
+	r.Use(middleware.Cors())          //防止跨域
 	r.POST("/login", api.Login)       //用户登录
 	r.POST("/register", api.Register) //用户注册
 	r.GET("/acc", api.Chat)           //用户申请聊天

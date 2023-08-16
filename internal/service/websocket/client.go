@@ -109,16 +109,6 @@ func ParseDate(cl *Client, msg []byte) {
 		} else {
 			repository.InsertCache(string(msg))
 		}
-	} else if m.TT == 3 {
-		Manager.Broadcast <- msg
-		ms := &models.Message{
-			FromId:     m.Fr,
-			TargetId:   m.To,
-			Context:    m.Ctx,
-			Type:       m.T,
-			TargetType: m.TT,
-		}
-		repository.InsertMessage(ms)
 	} else if m.TT == 2 {
 		vals, err := repository.SearchMembers(m.To)
 		if err != nil {
@@ -142,6 +132,16 @@ func ParseDate(cl *Client, msg []byte) {
 				acl.SendMessage(msg)
 			}
 		}
+	} else if m.TT == 3 {
+		Manager.Broadcast <- msg
+		ms := &models.Message{
+			FromId:     m.Fr,
+			TargetId:   m.To,
+			Context:    m.Ctx,
+			Type:       m.T,
+			TargetType: m.TT,
+		}
+		repository.InsertMessage(ms)
 	}
 
 }

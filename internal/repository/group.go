@@ -65,5 +65,3 @@ func SearchGroup(gname string) int64 {
 	}
 	return size
 }
-
-//查询自己所加群的列表

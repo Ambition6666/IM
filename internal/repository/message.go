@@ -5,7 +5,8 @@ import (
 	"im/sql"
 )
 
-// 对消息进行操作
+//-------------------------- 对消息进行操作-------------------------------
+
 // 插入消息
 func InsertMessage(a *models.Message) {
 	db := sql.GetMysqlDB()
