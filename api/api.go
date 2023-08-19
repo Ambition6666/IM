@@ -29,6 +29,7 @@ func Chat(c *gin.Context) {
 	cl := websokcet.NewClient(c.Query("name"), cc.RemoteAddr().String(), cc)
 	go cl.Read()
 	go cl.Write()
+	go cl.TimeOutClose()
 	websokcet.Manager.Register <- cl
 }
 

@@ -1,6 +1,9 @@
 package websokcet
 
-import "sync"
+import (
+	"sync"
+	"time"
+)
 
 type ClientManager struct {
 	Clients     map[*Client]bool   // 全部的连接
@@ -8,19 +11,19 @@ type ClientManager struct {
 	Users       map[string]*Client // 登录的用户 // appId+uuid
 	UserLock    sync.RWMutex       // 读写锁
 	Register    chan *Client       // 连接连接处理
-	//Login       chan *login        // 用户登录处理
-	Unregister chan *Client // 断开连接处理程序
-	Broadcast  chan []byte  // 广播 向全部成员发送数据
+	IsLogin     chan *Client       // 用户登录处理
+	Unregister  chan *Client       // 断开连接处理程序
+	Broadcast   chan []byte        // 广播 向全部成员发送数据
 }
 
 var Manager ClientManager
 
 func NewClientManager() (clientManager *ClientManager) {
 	clientManager = &ClientManager{
-		Clients:  make(map[*Client]bool),
-		Users:    make(map[string]*Client),
-		Register: make(chan *Client, 1000),
-		//Login:      make(chan *login, 1000),
+		Clients:    make(map[*Client]bool),
+		Users:      make(map[string]*Client),
+		Register:   make(chan *Client, 1000),
+		IsLogin:    make(chan *Client, 1000),
 		Unregister: make(chan *Client, 1000),
 		Broadcast:  make(chan []byte, 1000),
 	}
@@ -48,6 +51,11 @@ func (m *ClientManager) BroadCast(msg []byte) {
 		}
 	}
 }
+func (m *ClientManager) Heartbeat(c *Client) {
+	msg := []byte("pong")
+	c.SendMessage(msg)
+	c.Login_time = time.Now()
+}
 func (m *ClientManager) Start() {
 	for {
 		select {
@@ -56,6 +64,8 @@ func (m *ClientManager) Start() {
 			m.CreateUser(conn)
 		case conn := <-m.Unregister:
 			m.UnRest(conn)
+		case conn := <-m.IsLogin:
+			m.Heartbeat(conn)
 		case msg := <-m.Broadcast:
 			m.BroadCast(msg)
 		}

@@ -16,8 +16,9 @@ type User struct {
 // 好友
 type Hail_fellow struct {
 	gorm.Model
-	Name       string
-	FellowName string
+	Name         string
+	FellowName   string
+	Last_message string
 }
 
 // 好友申请

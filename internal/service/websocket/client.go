@@ -7,23 +7,26 @@ import (
 	"im/internal/service/models"
 	"im/vo"
 	"runtime/debug"
+	"time"
 
 	web "github.com/gorilla/websocket"
 )
 
 type Client struct {
-	Name string
-	Addr string
-	Send chan []byte
-	Conn *web.Conn
+	Name       string
+	Addr       string
+	Send       chan []byte
+	Conn       *web.Conn
+	Login_time time.Time
 }
 
 func NewClient(n string, addr string, cc *web.Conn) *Client {
 	return &Client{
-		Name: n,
-		Addr: addr,
-		Send: make(chan []byte, 100),
-		Conn: cc,
+		Name:       n,
+		Addr:       addr,
+		Send:       make(chan []byte, 100),
+		Conn:       cc,
+		Login_time: time.Now(),
 	}
 }
 
@@ -142,6 +145,22 @@ func ParseDate(cl *Client, msg []byte) {
 			TargetType: m.TT,
 		}
 		repository.InsertMessage(ms)
+	} else {
+		acl := Manager.Users[m.To]
+		Manager.IsLogin <- acl
 	}
 
+}
+
+// 定时检测客户端是否连接超时
+func (c *Client) TimeOutClose() {
+	for {
+		time.Sleep(10 * time.Second)
+		t := time.Now()
+		if t.After(c.Login_time.Add(60 * time.Second)) {
+			Manager.Unregister <- c
+			c.Conn.Close()
+			return
+		}
+	}
 }
